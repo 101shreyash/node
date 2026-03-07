@@ -38,3 +38,13 @@ else{
 })
 
 myserver.listen("8001")
+
+
+// basic manual routing using nodejs
+
+
+//  Routing means choosing what response to send based on the request path (URL) and sometimes method.
+
+// like here /me shows my info
+// sometimes /product shows the product page
+// /login → login page
