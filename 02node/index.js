@@ -1,15 +1,40 @@
 import http from "http"
+import fs from "fs"
+import info from "./utils.js"
 
 
-const myserver = http.createServer((req,res)=>{
 
-console.log("Request Received");
-console.log(req); // req itself is an obj , where info requests info are stored
+const myserver = http.createServer ((req , res) =>{
 
-console.log(req.headers);
-res.end("Hello from Nodeserver")
- 
+ const log = `${Date.now()} --- "Request Received" \n`
+
+fs.appendFile("./log.txt" , log , (err)=>{
+
+    if (err) {
+
+        console.log(err);
+        
+        
+    }
+})  
+
+if (req.url === "/") {
+
+res.end("Hey youre on the HomePage hit /me for my info")
+    
+}
+
+else if(req.url === "/me"){
+
+res.end(`${info}`)
+
+}
+
+else{
+    res.end("404 Not Found")
+}
+
+
 })
 
-
-myserver.listen(8000 , ()=> {console.log("Server Started!");})
+myserver.listen("8001")
