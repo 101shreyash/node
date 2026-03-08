@@ -1,0 +1,3 @@
+now we will gonna be writing all our server side scripts in express because
+making an http server using just node was pain in the ass , and express removes the whole ass not just the
+pain  Creating an HTTP server, handling routes, parsing requests, and managing responses manually in Node takes a lot of repetitive code and as we have seen lots of if else stuff 
