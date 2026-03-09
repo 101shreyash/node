@@ -1,0 +1,113 @@
+How versioning Works in Nodejs 
+
+
+// Firstly you can download any specific version of node js doing npm install express@*.*.*
+
+like npm install express@4.17.1
+
+    "express": "^5.2.1" - this right here we have the current version of express framework
+    so whats this ^ caret symbol and these 3 digits means here ??
+
+
+The full version follows semantic versioning: MAJOR.MINOR.PATCH.
+
+PATCH (.1) --- small fixes.
+
+MINOR (.2) --- new features, backward compatible.
+
+MAJOR (5) --- breaking changes, may not be backward compatible.
+
+
+
+ .1 ------ lets start with the last digit so the last digit here which is .1 
+, means (small updates , like typo fixes or some basic minor fixes which do not itself says 
+that its better than previous version  its just a new version with just simple typo and minor bug fixes )
+ 
+// this is called patch Version 
+
+
+
+.2 ----- the second last digit which is .2 refers  for backward-compatible new features. It can include new functionality, improvements, or sometimes security fixes,
+
+Suppose in version 4.17.0 you use app.use(express.json()) and it works.
+In version 4.18.0 (minor update), they add a new method app.use(express.text()) but don’t change or remove express.json(). Your old code still works—this is backward-compatible.
+
+in simple summary hey there's a new way of doing this but the older one works too 
+
+
+// its called minor version
+
+
+
+.5 ---------   the first digit which is 5 refers to the major Chnages or breaking Changes 
+
+this  update can change or remove things in the library that old code relies on, so if you upgrade from 4.x.x  to  5.x.x, some of your existing code might stop working unless you change it.
+
+Example in Express:
+
+express 4.x → app.use(express.json()) works.
+
+express 5.x → if they remove or change express.json() behavior, your old code breaks.
+
+
+
+ *** you can’t update this changes blindly. Major updates can break code, so you have to:
+
+Read the release notes to see what changed.
+Test your code against the new version in a safe environment before upgrading.
+Refactor code if needed to match breaking changes.
+So you can update, but it requires effort. Minor and patch updates are safe to update automatically.
+
+in simple terms lets say youve wrote somecode in version 5 , now in version 6 your code maynot be valid the syntax might chnage so if you update your version in the same codebase youre code will break it wont run Functions you rely on might be changed or removed. Always check release notes, test thoroughly, and refactor your code before upgrading
+so you can't do it blindly
+
+
+
+If you updated blindly and your code doesn’t run:
+
+Your program will throw errors—missing functions, changed behavior, or syntax differences.
+
+Any features that relied on the old version may stop working.
+
+You’ll have to either fix your code to match the new version or downgrade back to the old version.
+
+Nothing else happens beyond your code breaking.
+
+
+
+
+
+
+ _______________ Now lets talk about the caret ^ symbol which is very important _________________
+
+
+   
+   caret symbol is like locking stuff
+
+   ^5.2.1 means npm is allowed to install any version that does not change the major version.
+
+   when you do ^5.2.1 what it does is if theres any update it will update the version except the major changes , it would just update patch version and minor version without touching major version it would lock the number five
+
+
+
+ So it can update to:
+
+5.2.2 (patch update)
+
+5.3.0 (minor update)
+
+5.9.4
+
+But it will not install:
+
+6.0.0
+
+
+
+________ Similary we have ~ (tilde) for just patch update locking the both minor and major _______
+
+
+
+You use these symbols when specifying a package version in your package.json like this
+
+  "express": "^5.2.1" // this means , if theres any updates in the minor and patch just do for me so that i dont have to do it manually which is a good thing to have 
