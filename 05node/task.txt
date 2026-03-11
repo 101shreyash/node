@@ -1,0 +1,25 @@
+GET /students - List all the users - Html Document Render
+
+
+
+GET /api/students - List all the students - JSON
+GET /api/students/1 - Get the students with ID 1  
+GET /api/students/2 - Get the students with ID 1  
+
+
+
+
+// Dynamic path parameters
+
+GET /api/students:roll
+:roll - Variable | Dynamic
+
+
+
+
+
+POST /api/students - Create a new user
+
+PATCH /api/students/1 - Edit the user with ID 1 
+
+DELETE /api/students/1 - DELETE the user with ID 1 
