@@ -1,71 +1,73 @@
-import express, { json } from "express"
-import students from './students.json' with {type : "json"}
+import express from "express"
 import fs from "fs"
+import students from "./students.json" with {type : "json"}
 
-const port = 8000
+const port = 8001;
 const app = express()
 
-// MiddleWare - assume it as a pluggin for now 
-app.use(express.urlencoded({extended : true})) ; 
+app.use(express.urlencoded({ extended: true }))
+app.route("/api/students")
 
-app.route("/api/students").get((req,res) =>{
+.get((req,res) => {
 
     res.send(students)
 })
 
 .post((req,res) =>{
 
- // Create user
-  const reqbody = req.body;
+    
+     const newuser = {
 
-   students.push({ // record records userinfo
-  id: reqbody.id,
-  first_name: reqbody.first_name,
-  last_name: reqbody.last_name,
-  email: reqbody.email
-});
+        first_name : req.body.first_name,
+        last_name : req.body.last_name,
+        email : req.body.email,
+        gender : req.body.gender,
+        id : students.length+1,
+     }
 
-fs.writeFile("./students.json" , JSON.stringify(students, null, 2), (err)=>{
+     students.push(newuser)
+ 
+     fs.writeFile("./students.json" , JSON.stringify(students , null , 2) , (err) =>{
 
-    if (err) {
+      if (err) {
 
         console.log(err);
         
+      }
+      else{
         
-    }
+      res.send("Sucessfully Registered")
+
+      }
+         
+     })
+ 
 })
 
+app.route("/api/students/:id")
 
-
-//  console.log( "reqbody" , reqbody);
-  
-
-    res.send({json :"pending"})
-})
-
-
-app.route("/api/students/:rollno")
 
 .get((req,res) =>{
 
-    const reqRollNo = Number(req.params.rollno)
-   const foundID =  students.find((std) => std.id === reqRollNo)
-   res.send(foundID)
+    const reqid = Number(req.params.id)
+   const foundid =  students.find((std) => std.id === reqid)
+   res.send(foundid)
+    // res.send()
 })
 
 .patch((req,res) =>{
 
-    // Update user
-   res.send({json :"pending"})
-
+    // Operation Pending
 })
 
 .delete((req,res) =>{
 
-    // Delete user
-   res.send({json :"pending"})
-
+    // Operation pending
 })
 
 
 app.listen(port)
+
+
+
+
