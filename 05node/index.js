@@ -6,6 +6,8 @@ const port = 8001;
 const app = express()
 
 app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
+
 app.route("/api/students")
 
 .get((req,res) => {
@@ -50,21 +52,43 @@ app.route("/api/students/:id")
 .get((req,res) =>{
 
     const reqid = Number(req.params.id)
-   const foundid =  students.find((std) => std.id === reqid)
+   const  foundid =  students.find((std) => std.id === reqid)
    res.send(foundid)
     // res.send()
 })
 
-.patch((req,res) =>{
 
-    // Operation Pending
+.patch((req, res) => {
+    const reqid = Number(req.params.id);
+    const foundid = students.find((std) => std.id === reqid);
+    if (!foundid) return res.status(404).send("Student not found");
+
+    foundid.first_name = req.body.first_name;
+    foundid.last_name = req.body.last_name;
+    foundid.email = req.body.email;
+    foundid.gender = req.body.gender;
+
+    fs.writeFile("./students.json", JSON.stringify(students, null, 2), (err) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send("UserModified");
+        }
+    });
 })
 
-.delete((req,res) =>{
+.delete((req, res) => {
+    const reqid = Number(req.params.id);
+    const index = students.findIndex(s => s.id === reqid);
+    if (index === -1) return res.status(404).send("Student not found");
 
-    // Operation pending
+    students.splice(index, 1);
+
+    fs.writeFile("./students.json", JSON.stringify(students, null, 2), err => {
+        if (err) return res.status(500).send("Error deleting");
+        res.send("Deleted successfully");
+    });
 })
-
 
 app.listen(port)
 
