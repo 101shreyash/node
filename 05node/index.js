@@ -1,67 +1,86 @@
-import express from "express"
-import fs from "fs"
-import students from "./students.json" with {type : "json"}
+import express from "express";
+import fs from "fs";
+import students from "./students.json" with { type: "json" };
 
 const port = 8001;
-const app = express()
+const app = express();
 
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json())
+app
+  .route("/students")
+  .get((req, res) => {
+    res.send(students);
+  })
 
-app.route("/api/students")
+  .post((req, res) => {
+    const newusers = {
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
+      gender: req.body.gender,
+      email: req.body.email,
+      id: students.length + 1,
+    };
 
-.get((req,res) => {
+    students.push(newusers);
 
-    res.send(students)
-})
+    fs.writeFile(
+      "./students.json",
+      JSON.stringify(students, null, 2),
+      (err) => {
+        if (err) {
+          console.log(err);
+        } else {
+          res.send("UserAdded");
+        }
+      },
+    );
+  });
 
-.post((req,res) =>{
+app
+  .route("/students/:id")
 
-    
-     const newuser = {
-
-        first_name : req.body.first_name,
-        last_name : req.body.last_name,
-        email : req.body.email,
-        gender : req.body.gender,
-        id : students.length+1,
-     }
-
-     students.push(newuser)
- 
-     fs.writeFile("./students.json" , JSON.stringify(students , null , 2) , (err) =>{
-
-      if (err) {
-
-        console.log(err);
-        
-      }
-      else{
-        
-      res.send("Sucessfully Registered")
-
-      }
-         
-     })
- 
-})
-
-app.route("/api/students/:id")
-
-
-.get((req,res) =>{
-
-    const reqid = Number(req.params.id)
-   const  foundid =  students.find((std) => std.id === reqid)
-   res.send(foundid)
-    // res.send()
-})
-
-
-.patch((req, res) => {
+  .get((req, res) => {
     const reqid = Number(req.params.id);
     const foundid = students.find((std) => std.id === reqid);
-    if (!foundid) return res.status(404).send("Student not found");
+    if (!foundid) {
+return res.status(404).send("Not Found");
+    }
+    res.send(foundid);
+  })
+
+  .delete((req,res) =>{
+
+    const reqid = Number(req.params.id);
+
+    const index = students.findIndex((std) => std.id === reqid);
+ if (index === -1) return res.status(404).send("Not Found");
+
+students.splice(index, 1);
+  fs.writeFile("./students.json" , JSON.stringify(students , null , 2) , (err) =>{
+
+ if (err) {
+  console.log(err);
+  
+ }
+ else{
+
+  res.send("UserDeleted")
+ }
+
+  })
+
+    
+  })
+
+
+  .patch((req, res) => {
+    const reqid = Number(req.params.id);
+    const foundid = students.find((std) => std.id === reqid);
+
+    if (!foundid) {
+return res.status(404).send("Not Found");
+    }
 
     foundid.first_name = req.body.first_name;
     foundid.last_name = req.body.last_name;
@@ -69,29 +88,12 @@ app.route("/api/students/:id")
     foundid.gender = req.body.gender;
 
     fs.writeFile("./students.json", JSON.stringify(students, null, 2), (err) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.send("UserModified");
-        }
+      if (err) {
+        console.log(err);
+      } else {
+        res.send("UserModified");
+      }
     });
-})
+  });
 
-.delete((req, res) => {
-    const reqid = Number(req.params.id);
-    const index = students.findIndex(s => s.id === reqid);
-    if (index === -1) return res.status(404).send("Student not found");
-
-    students.splice(index, 1);
-
-    fs.writeFile("./students.json", JSON.stringify(students, null, 2), err => {
-        if (err) return res.status(500).send("Error deleting");
-        res.send("Deleted successfully");
-    });
-})
-
-app.listen(port)
-
-
-
-
+app.listen(port);
